@@ -1,58 +1,4 @@
-// #include <stdio.h>
-// #include <stdlib.h>
-// #include <string.h>
 
-// // Ajouter un livre au stock 
-// void Ajouter(char **Titre, char **auteur, double *prix, int *qte, int *i) {
-//     char titree[100], aut[100];
-//     double pr;
-//     int qt;
-
-//     printf("Entrer le titre: ");
-//     scanf("%s", titree);
-//     Titre[*i] = (char *)malloc(strlen(titree) + 1);
-//     strcpy(Titre[*i], titree);
-
-//     printf("Entrer le NOM DU auteur: ");
-//     scanf("%s", aut);
-   
-//     auteur[*i] = (char *)malloc(strlen(aut) + 1);
-//     strcpy(auteur[*i], aut);
-
-//     printf("Entrer le Prix: ");
-//     scanf("%lf", &pr);
-//     prix[*i] = pr;
-
-//     printf("Entrer la quantite de livre: ");
-//     scanf("%d", &qt);
-//     qte[*i] = qt;
-// }
-
-// int main() {
-//     int choix = 1;
-//     int i = 0;
-//     char *titre[100];
-//     char *auteur[100];
-//     double prix[100];
-//     int qte[100];
-
-//     while (choix != 0) {
-//         printf("Si vous pouvez ajouter un livre entrez 1, si vous pouvez sortir entrez 0: ");
-//         scanf("%d", &choix);
-//         if (choix == 1) {
-//             Ajouter(titre, auteur, prix, qte, &i);
-//             i++;
-//         }
-//     }
-
-//     // LibErer la memoire allouée
-//     for (int j = 0; j < i; j++) {
-//         free(titre[j]);
-//         free(auteur[j]);
-//     }
-
-//     return 0;
-// }
 #include <stdio.h>
 #include <string.h>
 
@@ -122,7 +68,7 @@ void suppression(char Titre[][100], char auteur[][100], double *prix, int *qte, 
 }
 void main() {
     int choix ;
-    int i = 0,j;
+    int i = 0,j,somme=0;
     char titre[100][100];
     char auteur[100][100];
     double prix[100];
@@ -151,6 +97,13 @@ void main() {
             printf("entrer le titre du livre a mis a jour :");
             scanf("%s",&titresup);
             suppression(titre, auteur, prix, qte, &i,titresup);
+            break;
+            case 5:
+            for(j=0;j< i;j++)
+    {
+        somme+=qte[j];
+    }
+    printf("la somme = %d",somme);
         }
     }
 
