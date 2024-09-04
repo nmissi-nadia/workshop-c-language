@@ -66,6 +66,16 @@ void suppression(char Titre[][100], char auteur[][100], double *prix, int *qte, 
     }
     printf("Le livre '%s' n'a pas été trouvé dans le stock.\n", nom);
 }
+//Afficher le Nombre Total de Livres en Stock
+int nb_totale(int *qte, int *i)
+{
+    int somme =0,j;
+           for(j=0;j< *i;j++)
+    {
+        somme+=qte[j];
+    }
+    return somme;
+}
 void main() {
     int choix ;
     int i = 0,j,somme=0;
@@ -76,7 +86,7 @@ void main() {
     char titremaj[20],titresup[20];
 
     while (choix != 0) {
-        printf("Si vous pouvez ajouter un livre entrez 1,\nSi vous pouvez afficher un stock entrez 2 \n Si vous pouvez Mettre à Jour la Quantite d'un Livre entrez 3 \nSi vous pouvez supprimer un stock entrez 4 \n si vous pouvez sortir entrez 0: ");
+        printf("Si vous pouvez ajouter un livre entrez 1,\nSi vous pouvez afficher un stock entrez 2 \nSi vous pouvez Mettre à Jour la Quantite d'un Livre entrez 3\nSi vous pouvez supprimer un stock entrez 4 \nSi vous pouvez le nobre totele des livres entrez 5 \nSi vous pouvez sortir entrez 0: ");
         scanf("%d", &choix);
         switch(choix ) {
             case 1:
@@ -99,11 +109,8 @@ void main() {
             suppression(titre, auteur, prix, qte, &i,titresup);
             break;
             case 5:
-            for(j=0;j< i;j++)
-    {
-        somme+=qte[j];
-    }
-    printf("la somme = %d",somme);
+     somme=nb_totale(qte,&i);
+    printf("Le nombre des livres dans stock = %d \n",somme);
         }
     }
 
