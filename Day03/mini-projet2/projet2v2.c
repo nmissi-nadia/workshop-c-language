@@ -94,6 +94,33 @@ void recherche(Carnet re,char nom[20])
         printf("Nom : %s -> Num : %s -> Adresse : %s\n", re.con[pos].nom, re.con[pos].num, re.con[pos].adresse);
     }
 }
+void tri_insertion(Carnet *T) {
+    int i, j;
+    Contact c;
+    printf("hello");
+    for (i = 1; i < T->taille; i++) {
+        c = T->con[i];
+        j = i - 1;
+        while (j >= 0 && strcmp(T->con[j].nom,c.nom)>0) {
+            T->con[j + 1] = T->con[j];
+            j = j - 1;
+        }
+        T->con[j + 1] = c;
+    }
+}
+void tri_bulle(Carnet T) {
+    int i, j;
+    for (i = 0; i < T.taille - 1; i++) {
+        for (j = 0; j < T.taille - 1 - i; j++) {
+            if (strcmp(T.con[j].nom,T.con[j + 1].nom)> 0) {
+                Contact temp;
+                temp=T.con[j];
+                T.con[j]=T.con[j+1];
+                T.con[j+1]=temp;
+            }
+        }
+    }
+}
 //suppression des contacts du carnet
 Carnet suppresion(Carnet *re,char nom[20])
 {
@@ -128,6 +155,7 @@ void gestion() {
         printf("Si vous voulez modifier un contact entrez 3 :\n");
         printf("Si vous voulez supprimer un contact entrez 4 :\n");
         printf("Si vous voulez rechercher a un contact entrez 5 :\n");
+        printf("Si vous voulez tier le carnet entrez 6 :\n");
         printf("Si vous voulez quitter le menu entrez 0 :\n");
         scanf("%d", &choix);
         getchar(); 
@@ -156,6 +184,10 @@ void gestion() {
                 fgets(sky, sizeof(sky), stdin);
                 sky[strcspn(sky, "\n")] = '\0'; 
                 recherche(re,sky);
+                break;
+            case 6:
+                tri_insertion(&re);
+                // Afficher_carnet(re);
                 break;
             default:
                 printf("Fin de saisie.\n");

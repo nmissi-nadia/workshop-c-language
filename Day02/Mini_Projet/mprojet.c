@@ -23,6 +23,8 @@ void Ajouter(char Titre[][100], char auteur[][100], double *prix, int *qte, int 
     printf("Entrer la quantite de livre: ");
     scanf("%d", &qt);
     qte[*i] = qt;
+
+
 }
 // Afficher tous les livres disponibles.
 void Afficher(char Titre[][100], char auteur[][100], double *prix, int *qte, int *i)
@@ -31,6 +33,7 @@ void Afficher(char Titre[][100], char auteur[][100], double *prix, int *qte, int
     if(*i==0){
         printf("le stock est vide");
     }else{
+
         for(j=0;j<*i;j++){
             printf("le titre est %s ,l'auteur est %s ,le prix est %lf,la quantite est %d \n",Titre[j],auteur[j],prix[j],qte[j]);
         }
@@ -61,7 +64,7 @@ void suppression(char Titre[][100], char auteur[][100], double *prix, int *qte, 
 
             (*i)--;
             printf("Le livre '%s' a été supprimé du stock.\n", nom);
-            return;
+            
         }
     }
     printf("Le livre '%s' n'a pas été trouvé dans le stock.\n", nom);
@@ -104,7 +107,7 @@ void main() {
             Maj(titre,titremaj,qte,nvqt,&i);
             break;
             case 4:
-            printf("entrer le titre du livre a mis a jour :");
+            printf("entrer le titre du livre a supprimer :");
             scanf("%s",&titresup);
             suppression(titre, auteur, prix, qte, &i,titresup);
             break;
