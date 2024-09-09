@@ -156,7 +156,7 @@ void Modification(char nom[])
 
 // Fonction principale
 int main() {
-    int choix = -1, nombre,ch1,ch2,ch3,ch4,test;
+    int choix = -1, nombre,ch1,ch2,ch3,ch4,test,cf;
     char num[20], nom[30],nom_supprimer[30],nom_modifier[30];
     
     while (choix != 0) {
@@ -256,15 +256,38 @@ int main() {
                     scanf("%d", &ch4);
                     switch(ch4){
                     case 1:
-                        printf("Entrer le nom du contact pour modifier :");
-                        scanf("%s",nom_modifier);
-                        Modification(nom_modifier);
+                        printf("**Voulez vous vraiment Modifier ?**\n");
+                        printf("1. Oui .\n");
+                        printf("2. Non .\n");
+                        printf("Votre choix : ");
+                        scanf("%d", &cf);
+                        switch (cf)
+                        {
+                        case 1:
+                            printf("Entrer le nom du contact pour modifier :");
+                            scanf("%s",nom_modifier);
+                            Modification(nom_modifier);
+                            break;
+                        case 2:
+                            break;
+                        }
                         break;
                     case 2:
-                        printf("Entrer le nom du contact pour supprimer :");
-                        scanf("%s",nom_supprimer);
-                        supprimer_par_nom(nom_supprimer);
-                        break;
+                         printf("**Voulez vous vraiment Supprimer ?**\n");
+                        printf("1. Oui .\n");
+                        printf("2. Non .\n");
+                        printf("Votre choix : ");
+                        scanf("%d", &cf);
+                        switch (cf)
+                        {
+                            case 1:
+                            printf("Entrer le nom du contact pour supprimer :");
+                            scanf("%s",nom_supprimer);
+                            supprimer_par_nom(nom_supprimer);
+                            break;
+                            case 2:
+                                break;
+                        }
                     }
                 
                 break;

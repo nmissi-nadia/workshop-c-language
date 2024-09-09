@@ -58,20 +58,16 @@ int recherche_binaire(int T[], int taille, int valeur) {
     while (debut <= fin) {
         int milieu = debut + (fin - debut) / 2;
 
-        // Vérifiez si la valeur est présente au milieu
+
         if (T[milieu] == valeur)
             return milieu;
-
-        // Si la valeur est plus grande, ignorez la moitié gauche
         if (T[milieu] < valeur)
             debut = milieu + 1;
 
-        // Si la valeur est plus petite, ignorez la moitié droite
         else
             fin = milieu - 1;
     }
 
-    // Si l'élément n'est pas présent dans le tableau
     return -1;
 }
 
