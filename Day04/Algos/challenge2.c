@@ -5,9 +5,9 @@
 int recherche_sous_chaine(char chaine[], char sous_chaine[]) {
     int longueur_chaine = strlen(chaine);
     int longueur_sous_chaine = strlen(sous_chaine);
-
-    for (int i = 0; i <= longueur_chaine - longueur_sous_chaine; i++) {
-        int j;
+    int i,j;
+    for ( i = 0; i <= longueur_chaine - longueur_sous_chaine; i++) {
+        
         for (j = 0; j < longueur_sous_chaine; j++) {
             if (chaine[i + j] != sous_chaine[j])
                 break;
