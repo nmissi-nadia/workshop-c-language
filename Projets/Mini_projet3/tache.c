@@ -1,27 +1,28 @@
 #include <stdio.h>
 #include <string.h>
+#include <time.h>
 
 #define MAX_TACHES 100
 
 // Structure pour représenter une date
-typedef struct  {
+typedef struct {
     int jour;
     int mois;
     int annee;
-}Date;
+} Date;
 
 // Structure pour représenter une tâche
-typedef struct  {
+typedef struct {
     int id;
     char titre[100];
     char description[255];
     Date deadline;
-    char statut[50];  // Exemple : "à réaliser", "en cours de réalisation", "finalisée"
-}Tache;
+    char statut[50]; // Exemple : "à réaliser", "en cours de réalisation", "finalisée"
+} Tache;
 
 // Tableau de tâches
 Tache tab[MAX_TACHES];
-int taille = 0;  // Nombre de tâches
+int taille = 0; // Nombre de tâches
 
 // Fonction pour valider une date
 int dateValidee(int jour, int mois, int annee) {
@@ -38,15 +39,32 @@ int dateValidee(int jour, int mois, int annee) {
     return 0; // Date invalide
 }
 
+// Fonction pour calculer la différence en jours entre deux dates
+int differenceJours(Date d) {
+    time_t t = time(NULL);
+    struct tm today = *localtime(&t);
+
+    struct tm deadline = {0};
+    deadline.tm_mday = d.jour;
+    deadline.tm_mon = d.mois - 1; // Les mois commencent à 0 dans struct tm
+    deadline.tm_year = d.annee - 1900;
+
+    time_t deadline_time = mktime(&deadline);
+    time_t now = mktime(&today);
+
+    double difference = difftime(deadline_time, now) / (60 * 60 * 24); // Différence en jours
+    return (int)difference;
+}
+
 // Fonction pour créer une nouvelle tâche
 void creerTache() {
     if (taille < MAX_TACHES) {
         Tache t;
         t.id = taille + 1;
         printf("Entrez le titre de la tâche : ");
-        getchar();  // Pour éviter les erreurs liées à la saisie
+        getchar(); // Pour éviter les erreurs liées à la saisie
         fgets(t.titre, sizeof(t.titre), stdin);
-        t.titre[strcspn(t.titre, "\n")] = 0;  
+        t.titre[strcspn(t.titre, "\n")] = 0;
 
         printf("Entrez la description de la tâche : ");
         fgets(t.description, sizeof(t.description), stdin);
@@ -61,7 +79,7 @@ void creerTache() {
         }
 
         printf("Entrez le statut de la tâche : ");
-        getchar();  // Effacer le buffer
+        getchar(); // Effacer le buffer
         fgets(t.statut, sizeof(t.statut), stdin);
         t.statut[strcspn(t.statut, "\n")] = 0;
 
@@ -80,6 +98,15 @@ void afficherTache(Tache t) {
     printf("Description: %s\n", t.description);
     printf("Deadline: %02d/%02d/%04d\n", t.deadline.jour, t.deadline.mois, t.deadline.annee);
     printf("Statut: %s\n", t.statut);
+
+    // Calcul et affichage des jours restants jusqu'à la deadline
+    int jours_restants = differenceJours(t.deadline);
+    if (jours_restants > 0) {
+        printf("Jours restants jusqu'au délai : %d jours\n", jours_restants);
+    } else {
+        printf("Délai dépassé de %d jours.\n", -jours_restants);
+    }
+
     printf("---------------------------\n");
 }
 
@@ -94,85 +121,23 @@ void afficherToutesTaches() {
     }
 }
 
-// Fonction pour rechercher une tâche par son ID
-int Rechercher_id(int id) {
+// Fonction pour afficher des statistiques
+void afficherStatistiques() {
+    int completes = 0, incompletes = 0;
+
     for (int i = 0; i < taille; i++) {
-        if (tab[i].id == id) {
-            return i; 
-        }
-    }
-    return -1; 
-}
-
-// Fonction pour rechercher une tâche par son titre
-int Rechercher_titre(char titre[]) {
-    for (int i = 0; i < taille; i++) {
-        if (strcmp(tab[i].titre, titre) == 0) {
-            return i; 
-        }
-    }
-    return -1; 
-}
-
-// Fonction pour modifier la description d'une tâche
-void Modification_description(int id) {
-    int index = Rechercher_id(id);
-    if (index != -1) {
-        printf("Entrez la nouvelle description : ");
-        getchar(); // Pour effacer le retour à la ligne restant dans le buffer
-        fgets(tab[index].description, sizeof(tab[index].description), stdin);
-        printf("Description modifiée avec succès.\n");
-    } else {
-        printf("Tâche non trouvée.\n");
-    }
-}
-
-// Fonction pour modifier le statut d'une tâche
-void Modification_statut(int id) {
-    int index = Rechercher_id(id);
-    if (index != -1) {
-        printf("Entrez le nouveau statut (à réaliser, en cours de réalisation, finalisée) : ");
-        getchar(); 
-        fgets(tab[index].statut, sizeof(tab[index].statut), stdin);
-        printf("Statut modifié avec succès.\n");
-    } else {
-        printf("Tâche non trouvée.\n");
-    }
-}
-
-// Fonction pour modifier la deadline d'une tâche
-void Modification_deadline(int id) {
-    int index = Rechercher_id(id);
-    if (index != -1) {
-        int jour, mois, annee;
-        printf("Entrez la nouvelle deadline (jj mm aaaa) : ");
-        scanf("%d %d %d", &jour, &mois, &annee);
-        if (dateValidee(jour, mois, annee)) {
-            tab[index].deadline.jour = jour;
-            tab[index].deadline.mois = mois;
-            tab[index].deadline.annee = annee;
-            printf("Deadline modifiée avec succès.\n");
+        if (strcmp(tab[i].statut, "finalisée") == 0) {
+            completes++;
         } else {
-            printf("Date invalide.\n");
+            incompletes++;
         }
-    } else {
-        printf("Tâche non trouvée.\n");
     }
-}
 
-// Fonction pour supprimer une tâche par ID
-void supprimer_par_id(int id) {
-    int index = Rechercher_id(id);
-    if (index != -1) {
-       
-        for (int i = index; i < taille - 1; i++) {
-            tab[i] = tab[i + 1];
-        }
-        taille--; 
-        printf("Tâche supprimée avec succès.\n");
-    } else {
-        printf("Tâche non trouvée.\n");
-    }
+    printf("\n****** Statistiques ******\n");
+    printf("Nombre total de tâches : %d\n", taille);
+    printf("Nombre de tâches complètes : %d\n", completes);
+    printf("Nombre de tâches incomplètes : %d\n", incompletes);
+    printf("**************************\n");
 }
 
 // Fonction pour afficher le menu principal
@@ -180,111 +145,34 @@ void afficherMenu() {
     printf("\n********* Menu Principal *********\n");
     printf("1. Créer une tâche\n");
     printf("2. Afficher toutes les tâches\n");
-    printf("3. Rechercher une tâche\n");
-    printf("4. Modifier ou supprimer une tâche\n");
-    printf("5. Quitter\n");
+    printf("3. Afficher les statistiques\n");
+    printf("4. Quitter\n");
     printf("Votre choix : ");
 }
 
 int main() {
-    int choix, id, jour, mois, annee, ch4, md;
-    char titre[100];
+    int choix;
     do {
         afficherMenu();
         scanf("%d", &choix);
-        
+
         switch (choix) {
             case 1:
                 creerTache();
                 break;
-            
             case 2:
                 afficherToutesTaches();
                 break;
-            
             case 3:
-                printf("*******Menu de Recherche*******\n");
-                printf("1. Rechercher par ID\n");
-                printf("2. Rechercher par Titre\n");
-                printf("Votre choix : ");
-                scanf("%d", &ch4);
-                
-                if (ch4 == 1) {
-                    printf("Entrez l'ID de la tâche à rechercher : ");
-                    scanf("%d", &id);
-                    int index = Rechercher_id(id);
-                    if (index != -1) {
-                        afficherTache(tab[index]);
-                    } else {
-                        printf("Tâche non trouvée.\n");
-                    }
-                } else if (ch4 == 2) {
-                    printf("Entrez le titre de la tâche à rechercher : ");
-                    getchar();
-                    fgets(titre, sizeof(titre), stdin);
-                    titre[strcspn(titre, "\n")] = 0;
-                    int index = Rechercher_titre(titre);
-                    if (index != -1) {
-                        afficherTache(tab[index]);
-                    } else {
-                        printf("Tâche non trouvée.\n");
-                    }
-                } else {
-                    printf("Choix invalide.\n");
-                }
+                afficherStatistiques();
                 break;
-            
             case 4:
-                printf("*******Menu de Manipulation*******\n");
-                printf("1. Modification d'une tâche\n");
-                printf("2. Suppression d'une tâche par ID\n");
-                printf("Votre choix : ");
-                scanf("%d", &ch4);
-                
-                switch (ch4) {
-                    case 1:
-                        printf("Entrez l'ID de la tâche à modifier : ");
-                        scanf("%d", &id);
-                        printf("1. Modifier la description\n");
-                        printf("2. Modifier le statut\n");
-                        printf("3. Modifier la deadline\n");
-                        printf("Votre choix : ");
-                        scanf("%d", &md);
-                        
-                        switch (md) {
-                            case 1:
-                                Modification_description(id);
-                                break;
-                            case 2:
-                                Modification_statut(id);
-                                break;
-                            case 3:
-                                Modification_deadline(id);
-                                break;
-                            default:
-                                printf("Choix invalide.\n");
-                        }
-                        break;
-                        
-                    case 2:
-                        printf("Entrez l'ID de la tâche à supprimer : ");
-                        scanf("%d", &id);
-                        supprimer_par_id(id);
-                        break;
-                        
-                    default:
-                        printf("Choix invalide.\n");
-                }
+                printf("Fin de saisie ! Au revoir !\n");
                 break;
-            
-            case 5:
-                printf("fin de Saisie !!! Au revoir !\n");
-                break;
-            
             default:
                 printf("Choix invalide.\n");
         }
-    } while (choix != 5);
-    
+    } while (choix != 4);
+
     return 0;
 }
