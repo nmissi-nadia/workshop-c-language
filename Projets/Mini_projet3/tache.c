@@ -62,25 +62,40 @@ void creerTache() {
     if (taille < MAX_TACHES) {
         Tache t;
         t.id = taille + 1;
+        int b;
         printf("Entrez le titre de la tâche : "); 
         getchar();
         gets(t.titre);
-
         printf("Entrez la description de la tâche : ");
         getchar();
-        scanf(t.description);
-
-        printf("Entrez la deadline (jj mm aaaa) : ");
-        scanf("%d %d %d", &t.deadline.jour, &t.deadline.mois, &t.deadline.annee);
+        gets(t.description);
+        printf("Entrez le statut de la tâche \n");
+        printf("1. à réaliser\n  2. en cours de réalisation\n   3. finalisée\n  ");
+        scanf("%d",&b);
+        switch (b)
+        {
+        case 1:
+            strcpy(t.statut,"à réaliser");
+            break;
+        case 2:
+            strcpy(t.statut,"en cours de réalisation");
+            break;
+        case 3:
+            strcpy(t.statut,"finalisée");
+            break;
+        }
+        do
+        {
+            printf("Entrez la deadline (jj mm aaaa) : ");
+            scanf("%d %d %d", &t.deadline.jour, &t.deadline.mois, &t.deadline.annee);
 
         if (!dateValidee(t.deadline.jour, t.deadline.mois, t.deadline.annee)) {
             printf("Date invalide ! La tâche ne peut pas être créée.\n");
-            return;
         }
+        }while(!dateValidee(t.deadline.jour, t.deadline.mois, t.deadline.annee));
 
-        printf("Entrez le statut de la tâche à réaliser”, “en cours de réalisation”,  “finalisée\": ");
-        scanf("%s[^\n]", t.statut);
 
+        printf("hello\n");
         tab[taille] = t;
         taille++;
         printf("Tâche créée avec succès.\n");
@@ -118,7 +133,49 @@ void afficherToutesTaches() {
         }
     }
 }
+// fonction de Trie les tâches par ordre alphabétique
+void Trie_titre() {
+    int i, j;
+    Tache temp;
+    for (i = 0; i < taille - 1; i++) {
+        for (j = i + 1; j < taille; j++) {
+            if (strcmp(tab[i].titre, tab[j].titre) > 0) {
+                temp = tab[i];
+                tab[i] = tab[j];
+                tab[j] = temp;
+            }
+        }
+    }
+}
 
+// Tri des les tâches par deadline.
+void Trie_deadline() {
+    int i, j;
+    Tache temp;
+    for (i = 0; i < taille - 1; i++) {
+        for (j = i + 1; j < taille; j++) {
+            if (differenceJours(tab[i].deadline)> differenceJours(tab[j].deadline)) {
+                temp = tab[i];
+                tab[i] = tab[j];
+                tab[j] = temp;
+           
+            }
+        }
+    }
+}
+//
+void AfficherTache3joursdeadline(){
+     if (taille == 0) {
+        printf("Aucune tâche à afficher.\n");
+    } else {
+        for (int i = 0; i < taille; i++) {
+            if(differenceJours(tab[i].deadline)<=3 && differenceJours(tab[i].deadline)>=0){
+                afficherTache(tab[i]);
+            }
+                
+        }
+    }
+}
 // Fonction pour afficher des statistiques
 void afficherStatistiques() {
     int completes = 0, incompletes = 0;
@@ -231,7 +288,7 @@ void afficherMenu() {
 }
 
 int main() {
-    int choix, id, jour, mois, annee, ch4, md;
+    int choix, id, jour, mois, annee,ch1, ch4, md;
     char titre[100];
     do {
         afficherMenu();
@@ -243,7 +300,32 @@ int main() {
                 break;
             
             case 2:
-                afficherToutesTaches();
+            printf("*******Menu d'Affichage*******\n");
+                printf("1. Affichage Simple\n");
+                printf("2. Affichage Trier des tâches par deadline.\n");
+                printf("3. Trier les tâches par ordre alphabétique.\n");
+                printf("4. Afficher les tâches dont le deadline est dans 3 jours ou moins\n");
+                
+                printf("Votre choix : ");
+                scanf("%d", &ch1);
+                switch (ch1)
+                {
+                case 1:
+                    afficherToutesTaches();
+                    break;
+                case 2:
+                    Trie_deadline();
+                    afficherToutesTaches();
+                    break;
+                case 3:
+                    Trie_titre();
+                    afficherToutesTaches();
+                    break;
+                case 4:
+                    AfficherTache3joursdeadline();
+                    break;
+                }
+                
                 break;
             
             case 3:
@@ -265,7 +347,7 @@ int main() {
                 } else if (ch4 == 2) {
                     printf("Entrez le titre de la tâche à rechercher : ");
                     getchar();
-                    scanf("%s[^\n]",titre);
+                    gets(titre);
                     int index = Rechercher_titre(titre);
                     if (index != -1) {
                         afficherTache(tab[index]);
